@@ -41,7 +41,7 @@ will modify the +Approval+ model that your +acts_as_approvable+ model has.
 By specifing a :constraint option, you can regulate which models are allowed to do approvals:
 
     class Thing < ActiveRecord::Base
-	    acts_as_approvable :constraint => Proc.new {|approver| approver.name == "Admin" }
+      acts_as_approvable :constraint => Proc.new {|approver| approver.name == "Admin" }
     end
 
 == Compatibility
