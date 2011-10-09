@@ -39,20 +39,20 @@ module ActsAsApprovable
         approval.approved?
       end
       
-      def approve!(who)
+      def approve!(who=nil)
         create_pending_approval if approval.nil?
         if pending? && constraint_fulfilled(who)
           approval.approved = true
-          approval.approver = who || current_user || nil
+          approval.approver = who
           approval.save!
         end
       end
       
-      def disapprove!(who)
+      def disapprove!(who=nil)
         create_pending_approval if approval.nil?
         if approved? && constraint_fulfilled(who)
           approval.approved = false
-          approval.approver = who || current_user || nil
+          approval.approver = who
           approval.save!
         end
       end

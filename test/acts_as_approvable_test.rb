@@ -72,6 +72,13 @@ class ActsAsApprovableTest < ActiveSupport::TestCase
     assert_equal @person, @thing.approver
   end
   
+  test "approver can be nil" do
+    @thing.approve!
+    
+    assert_equal false, @thing.pending?
+    assert_equal nil, @thing.approver
+  end
+  
   test "disapprove a thing" do
     assert_equal true, @thing.pending?
     assert_equal nil, @thing.approver
