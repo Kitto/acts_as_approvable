@@ -6,7 +6,7 @@ module ActsAsApprovable
     
     module ClassMethods
       # Creates associations with +Approvals+ and add instance methods for getting approval status
-      def acts_as_approvable
+      def acts_as_approvable(options = {})
         # don't allow multiple calls
         return if self.included_modules.include?(ActsAsApprovable::Approver::InstanceMethods)
         
@@ -18,6 +18,11 @@ module ActsAsApprovable
         
         # make sure ever approvable model has an associated approval
         after_create :create_pending_approval
+        
+        if options[:constraint]
+          class_attribute :approval_constraint
+          self.approval_constraint = options[:constraint]
+        end
         
         include ActsAsApprovable::Approver::InstanceMethods
       end
@@ -36,7 +41,7 @@ module ActsAsApprovable
       
       def approve!(who)
         create_pending_approval if approval.nil?
-        if pending?
+        if pending? && constraint_fulfilled(who)
           approval.approved = true
           approval.approver = who || current_user || nil
           approval.save!
@@ -45,7 +50,7 @@ module ActsAsApprovable
       
       def disapprove!(who)
         create_pending_approval if approval.nil?
-        if approved?
+        if approved? && constraint_fulfilled(who)
           approval.approved = false
           approval.approver = who || current_user || nil
           approval.save!
@@ -58,6 +63,11 @@ module ActsAsApprovable
       end
       
       private
+      
+      def constraint_fulfilled(who)
+        return true unless self.respond_to?(:approval_constraint) && self.approval_constraint
+        return self.approval_constraint.call(who)
+      end
       
       def create_pending_approval
         self.approval = Approval.create :approvable => self
