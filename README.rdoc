@@ -11,22 +11,22 @@ accordingly. Hopefully this code isn't overwhelmingly offensive to the Ruby elit
 == Installation
 In +Gemfile+:
 
-	gem 'acts_as_approvable', :git => 'https://github.com/iamvery/acts_as_approvable.git'
+	  gem 'acts_as_approvable', :git => 'https://github.com/iamvery/acts_as_approvable.git'
 	
 In your application root, run:
 
-	$ bundle install
+	  $ bundle install
 	
 Generate the migration (will overwrite any table named +Approvals+):
 
-	$ rails g acts_as_approvable:install
+	  $ rails g acts_as_approvable:install
 	
 == Usage
 Declare +acts_as_approvable+ on your models:
 
-	class Thing < ActiveRecord::Base
-		acts_as_approvable
-	end
+    class Thing < ActiveRecord::Base
+      acts_as_approvable
+    end
 	
 Doing so will add the following methods to your model:
 
@@ -40,9 +40,9 @@ will modify the +Approval+ model that your +acts_as_approvable+ model has.
 
 By specifing a :constraint option, you can regulate which models are allowed to do approvals:
 
-class Thing < ActiveRecord::Base
-	acts_as_approvable :constraint => Proc.new {|approver| approver.name == "Admin" }
-end
+    class Thing < ActiveRecord::Base
+	    acts_as_approvable :constraint => Proc.new {|approver| approver.name == "Admin" }
+    end
 
 == Compatibility
 This gem is designed to work with Rails 3.x. I will try to improve it over time as my infancy
